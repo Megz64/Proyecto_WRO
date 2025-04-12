@@ -1,18 +1,28 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include <Servo.h>
+Servo servo1;
+Servo servo2;
+int joyX = A0;
+int joyY = A1;
+int joyValX;
+int joyValY;
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+void setup ()
+{
+  servo1.attach(5);
+  servo2.attach(3);
+  Serial.begin(9600);
 }
+void loop()
+{
+  joyValX = analogRead(joyX);
+  joyValX = map (joyValX, 0, 1023, 0, 180);
+  servo1.write(joyValX);
+  Serial.write(joyX);
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  joyValY = analogRead(joyY);
+  joyValY = map (joyValY, 0, 1023, 0, 180);
+  servo2.write(joyValY);
+  delay(15);  
 }
