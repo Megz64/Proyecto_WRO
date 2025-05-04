@@ -5,65 +5,46 @@ Servo servo1;
 Servo servo2;
 int joyX = A1;
 int joyY = A0;
-int joyValX;
-int lastX;
-int lastY;
-int joyValY;
+float joyValX,joyValY;
+float X,Y;
+float vX,vY;
 
 void setup ()
 {
   servo1.attach(3);
   servo2.attach(5);
 
+  servo1.write(90);
+
+  Serial.begin(9600);
 
 }
 void loop()
 {
 
+
   joyValX = analogRead(joyX);
   joyValX = map (joyValX, 0, 1023, 0, 180);
 
-  if (joyValX > 92) {
-    if (lastX < joyValX) {
-      delay(15);
-      servo1.write(lastX);
-      
-    } else if (lastX > joyValX) {}
-    
-    lastX = joyValX-1;
-    delay(20);
+  X = constrain(X,0,180);
 
-  } else if (joyValX < 88) {
-    if (lastX < joyValX) {
-    } else if (lastX > joyValX) {
-      delay(15);
-      servo1.write(lastX);
-    }
-    lastX = joyValX+1;
-    delay(20);
-    }
-  
- 
-  joyValY = analogRead(joyY);
-  joyValY = map (joyValY, 0, 1023, 0, 180);
-  
+  Serial.println(vX);
 
-  if (joyValY > 92) {
-    if (lastY < joyValY) {
-      delay(15);
-      servo2.write(lastY);
-    } else if (lastY > joyValY) {}
-    
-    lastY = joyValY-1;
-    delay(20);
+  if (joyValX > 95) {
+    vX = map(joyValX,90,180,1,20);
+    vX = vX*0.1;
+  } else if (joyValX < 85) {
+    vX = map(joyValX,90,0,1,20);
+    vX = vX*0.1;
+  }
 
-  } else if (joyValY < 88) {
-    if (lastY < joyValY) {
-    } else if (lastY > joyValY) {
-      delay(15);
-      servo2.write(lastY);
-    }
-    lastY = joyValY+1;
-    delay(20);
-    }
+
+  if (joyValX < 180 && joyValX > 100) {
+    X = X + vX;
+    servo1.write(X);
+  }
+  if (joyValX < 80 && joyValX >= 0) {
+    X = X - vX;
+    servo1.write(X);
+  }
 }
