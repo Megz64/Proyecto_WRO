@@ -1,14 +1,14 @@
 #include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
 
-#include <Servo.h>
-Servo servo1; //X rotation
-Servo servo2; //Arm Base
-Servo servo3; //Arm Middle
+Adafruit_PWMServoDriver pwm;
 
-int button = 2;
+#define Servo_num 5
+
+
 int buttoncurrent;
 int buttonlast;
-bool Lockangle;
 
 int joyX = A1;
 int joyY = A0;
@@ -16,17 +16,26 @@ float joyValX,joyValY;
 float X,Y;
 float vX,vY;
 
+int anguloX,anguloY1,anguloY2,anguloY3 = 350;
+
+int muneca = A2;
+int mano = 2;
+int angulomuneca;
+int estadoboton;
+
 void setup ()
 {
-  servo1.attach(3);
-  servo2.attach(5);
-  servo3.attach(6);
+  pwm.begin();
+  pwm.setPWMFreq(50);
 
-  pinMode(button, INPUT_PULLUP);
+  /*pinMode(button, INPUT_PULLUP);
   buttoncurrent = HIGH;
-  buttonlast = LOW;
+  buttonlast = LOW;*/
 
   Serial.begin(9600);
+  pinMode(mano, INPUT);
+
+
 
 }
 void loop()
@@ -35,60 +44,86 @@ void loop()
   //Horizontal rotation
   joyValX = analogRead(joyX);
   joyValX = map (joyValX, 0, 1023, 0, 180);
+  
+  anguloX = constrain(anguloX, 125, 575);
 
-  X = constrain(X,0,180);
-
-  if (joyValX > 95) {
-    vX = map(joyValX,90,180,1,20);
-    vX = vX*0.1;
+    if (joyValX > 95) {
+    vX = map(joyValX,90,180,1,100);
   } else if (joyValX < 85) {
-    vX = map(joyValX,90,0,1,20);
-    vX = vX*0.1;
+    vX = map(joyValX,90,0,1,100);
+  }
+  vX = vX * 0.1;
+
+    
+  if (joyValX > 95) {
+    anguloX = anguloX + vX;
+    pwm.setPWM(0, 0, anguloX);
+  }
+  if (joyValX < 85) {
+    anguloX = anguloX - vX;
+    pwm.setPWM(0, 0, anguloX);
   }
 
 
-  if (joyValX < 180 && joyValX > 100) {
-    X = X + vX;
-    servo1.write(X);
-  }
-  if (joyValX < 80 && joyValX >= 0) {
-    X = X - vX;
-    servo1.write(X);
-  }
-
-
-  //Arm rotation
+  //Vertical rotation
   joyValY = analogRead(joyY);
   joyValY = map (joyValY, 0, 1023, 0, 180);
+  
+  anguloY1 = constrain(anguloY1, 125, 575);
+  anguloY2 = constrain(anguloY2, 125, 575);
+  anguloY3 = constrain(anguloY3, 200, 575);
 
-  Y = constrain(Y,0,180);
-
-  if (joyValY > 95) {
-    vY = map(joyValY,90,180,1,20);
-    vY = vY*0.1;
+    if (joyValY > 95) {
+    vY = map(joyValY,90,180,1,50);
   } else if (joyValY < 85) {
-    vY = map(joyValY,90,0,1,20);
-    vY = vY*0.1;
+    vY = map(joyValY,90,0,1,50);
+  }
+  vY = vY * 0.1;
+
+    
+  if (joyValY > 95) {
+    anguloY1 = anguloY1 + vY;
+    anguloY2 = 600 - anguloY1;
+    anguloY3 = 600 - anguloY1;
+    anguloY3 = constrain(anguloY3, 200, 575);
+
+    pwm.setPWM(1, 0, anguloY1);
+    pwm.setPWM(2, 0, anguloY2);
+    pwm.setPWM(3, 0, anguloY3);
+  }
+  if (joyValY < 85) {
+    anguloY1 = anguloY1 - vY;
+    anguloY2 = 600 - anguloY1;
+    anguloY3 = 600 - anguloY1;
+    anguloY3 = constrain(anguloY3, 200, 575);
+
+    pwm.setPWM(1, 0, anguloY1);
+    pwm.setPWM(2, 0, anguloY2);
+    pwm.setPWM(3, 0, anguloY3);
   }
 
+  //Wrist rotation/closing
 
-  if (joyValY < 180 && joyValY > 100) {
-    Y = Y + vY;
-    servo2.write(Y);
-    if (Lockangle == false){
-      servo3.write(180-Y);
+  angulomuneca = analogRead(muneca);
+  angulomuneca = map(angulomuneca, 0, 1023, 125, 575);
+  pwm.setPWM(4, 0, angulomuneca);
+
+  estadoboton = digitalRead(mano);
+  if (estadoboton == HIGH) {
+    delay(100);
+    if (buttonlast == LOW) {
+      pwm.setPWM(5,0,400);
+      buttonlast = HIGH;
+    } else {
+      pwm.setPWM(5,0,250);
+      buttonlast = LOW;
     }
-
   }
-  if (joyValY < 80 && joyValY >= 0) {
-    Y = Y - vY;
-    servo2.write(Y);
-    if (Lockangle == false){
-      servo3.write(180-Y);
-    }
-  }
+  
 
 
+
+    /*
   //Button presses
   buttoncurrent = digitalRead(button);
  
@@ -105,5 +140,6 @@ void loop()
     }
   
   }
-  delay(10);
+  */
+  delay(30);
 }
