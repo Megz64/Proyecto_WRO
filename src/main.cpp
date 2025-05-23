@@ -113,6 +113,7 @@ void loop()
   if (anguloY1 > 288) {
     while (digitalRead(brazo_adelante) == HIGH) {
       anguloY1++;
+      anguloY2++;
       anguloY3=anguloY1-160;
 
       pwm.setPWM(1, 0, anguloY1);
@@ -123,7 +124,7 @@ void loop()
 
     while (digitalRead(brazo_atras) == HIGH) {
       anguloY1--;
-      anguloY2=anguloY1+200;
+      anguloY2=anguloY1-250;
       anguloY3=anguloY1+5;
 
       pwm.setPWM(1, 0, anguloY1);
@@ -134,6 +135,7 @@ void loop()
   } else {
     while (digitalRead(brazo_adelante) == HIGH) {
       anguloY1--;
+      anguloY2--;
       anguloY3=anguloY1+50;
 
       pwm.setPWM(1, 0, anguloY1);
