@@ -165,5 +165,5 @@ void loop() {
       controllast = HIGH;
     } else {
       controllast = LOW;
-  
+    }
 } //Loop end
