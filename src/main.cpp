@@ -21,13 +21,13 @@ float vX,vY;
 int anguloX,anguloY1,anguloY2,anguloY3 = 350;
 
 int muneca = A2;
-int mano = 2;
+int mano = 10;
 int angulomuneca;
 int estadoboton;
 
 int full_direction,turn_direction;
 
-int botoncontrol=3;
+int botoncontrol=11;
 bool control;
 bool controllast;
 
