@@ -46,6 +46,8 @@ void setup() {
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
+
+  pinMode(12, OUTPUT);
 }
 
 void loop() {
@@ -59,34 +61,38 @@ void loop() {
   joyValY = analogRead(joyY);
   joyValY = map (joyValY, 0, 1023, 0, 180);
 
+  Serial.println(joyX);
+  Serial.println(joyY);
+
   control = digitalRead(botoncontrol);
     if (control == HIGH) {
-      delay(100);
+      delay(500);
       if (controllast == LOW) {
         controllast = HIGH;
       } else {
         controllast = LOW;
       }
     }
+  
 
-
-  if (controllast==LOW) {
-    if (full_direction > 530) {
+  if (controllast==HIGH) {
+    digitalWrite(12,HIGH);
+    if (full_direction > 540) {
       digitalWrite(2, HIGH);
       digitalWrite(3, LOW);
       digitalWrite(4, HIGH);
       digitalWrite(5, LOW);
-    } else if (full_direction < 510) {
+    } else if (full_direction < 500) {
       digitalWrite(2, LOW);
       digitalWrite(3, HIGH);
       digitalWrite(4, LOW);
       digitalWrite(5, HIGH);
-    } else if (turn_direction > 530) {
+    } else if (turn_direction > 540) {
       digitalWrite(2, HIGH);
       digitalWrite(3, LOW);
       digitalWrite(4, LOW);
       digitalWrite(5, HIGH);
-    } else if (turn_direction < 510) {
+    } else if (turn_direction < 500) {
       digitalWrite(2, LOW);
       digitalWrite(3, HIGH);
       digitalWrite(4, HIGH);
@@ -99,8 +105,8 @@ void loop() {
     }
 
 
-  } else if (controllast==HIGH) {
-    digitalWrite(13, LOW);
+  } else if (controllast==LOW) {
+    digitalWrite(12,LOW);
     anguloX = constrain(anguloX, 125, 575);
 
       if (joyValX > 95) {
@@ -162,7 +168,7 @@ void loop() {
   
     estadoboton = digitalRead(mano);
     if (estadoboton == HIGH) {
-      delay(100);
+      delay(500);
       if (buttonlast == LOW) {
         pwm.setPWM(5,0,400);
         buttonlast = HIGH;
