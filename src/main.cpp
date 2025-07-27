@@ -7,12 +7,14 @@ Adafruit_PWMServoDriver pwm;
 
 int joyY = A1;
 int joyX = A0;
+int secondaryjoyY = A3;
 
-int joyValX,joyValY=512;
+int joyValX,joyValY,secondaryjoyValY=512;
 float X,Y;
 float vX,vY;
 
-int anguloX,anguloY1,anguloY2,anguloY = 90;
+int  anguloY1,anguloY2,anguloY = 90;
+int anguloX1,anguloX = 180;
 
 int muneca = A2;
 int mano = 2;
@@ -23,7 +25,6 @@ int full_direction,turn_direction;
 
 int botoncontrol=3;
 bool control;
-bool controllast;
 bool buttonlast;
 
 void setup() {
@@ -33,11 +34,13 @@ void setup() {
   Wire.begin();
   pwm.begin();
   pwm.setPWMFreq(50);
+  Wire.setClock(50000);
+  delay(1000);
 
-  pinMode(mano, INPUT);
-  pinMode(botoncontrol, INPUT);
+  pinMode(mano, INPUT_PULLUP);
+  pinMode(botoncontrol, INPUT_PULLUP);
 
-  controllast = LOW;
+  control = LOW;
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
@@ -59,48 +62,39 @@ void loop() {
   joyValY = analogRead(joyY);
   joyValY = map (joyValY, 0, 1023, 0, 180);
 
+  secondaryjoyValY = analogRead(secondaryjoyY);
+  secondaryjoyValY = map (secondaryjoyValY,470,1023,0,180);
+
   //Serial.println(full_direction);
   //Serial.println(turn_direction);
 
   control = digitalRead(botoncontrol);
-    if (control == HIGH) {
-      delay(500);
-      if (controllast == LOW) {
-        controllast = HIGH;
-        Serial.println("Motor control");
-      } else {
-        controllast = LOW;
-        Serial.println("Servo control");
-      }
-      
-    }
-  
 
-  if (controllast==HIGH) {
+  if (control==HIGH) {
     digitalWrite(4,HIGH);
 
     full_direction = (desiredvalue * 0.8) + (full_direction * 0.2);
     turn_direction = (desiredvalue * 0.8) + (turn_direction * 0.2);
 
     if (full_direction > 530) {
+      analogWrite(5, 0);
+      analogWrite(6, 200);
+      analogWrite(9, 0);
+      analogWrite(10, 200);
+    } else if (full_direction < 490) {
       analogWrite(5, 200);
       analogWrite(6, 0);
       analogWrite(9, 200);
       analogWrite(10, 0);
-    } else if (full_direction < 490) {
-      analogWrite(5, 0);
-      analogWrite(6, 200);
-      analogWrite(9, 0);
-      analogWrite(10, 200);
     } else if (turn_direction > 530) {
-      analogWrite(5, 200);
+      analogWrite(5, 220);
       analogWrite(6, 0);
       analogWrite(9, 0);
-      analogWrite(10, 200);
+      analogWrite(10, 220);
     } else if (turn_direction < 490) {
       analogWrite(5, 0);
-      analogWrite(6, 200);
-      analogWrite(9, 200);
+      analogWrite(6, 220);
+      analogWrite(9, 220);
       analogWrite(10, 0);
     } else {
       analogWrite(5, 0);
@@ -110,32 +104,55 @@ void loop() {
     }
 
 
-  } else if (controllast==LOW) {
+  } else if (control==LOW) {
     digitalWrite(4,LOW);
     if (joyValY > 95) {
-      anguloY++;
+      anguloY+=2;
 
     } else if (joyValY < 85) {
-      anguloY--;
+      anguloY-=2;
     }
 
     anguloY = constrain(anguloY,0,180);
-    
-    anguloY1 = map(anguloY,0,180,150,600);
-    anguloY2 = map(90-anguloY,0,180,150,600);
 
+    anguloY1 = map(anguloY,0,180,150,600);
+    if (secondaryjoyValY > 100) {
+      anguloY2 = map(secondaryjoyValY,0,180,325,600);
+    } else if (secondaryjoyValY < 80) {
+      anguloY2 = map(secondaryjoyValY,0,180,200,325);
+    } else {
+      anguloY2 = map(90-anguloY,0,180,150,600);
+    }
+
+    delay(20);
     pwm.setPWM(1,0,anguloY1);
+    delay(20);
     pwm.setPWM(2,0,anguloY2);
+
+    if (joyValX > 95) {
+      anguloX+=2;
+
+    } else if (joyValX < 85) {
+      anguloX-=2;
+    }
+
+    anguloX = constrain(anguloX,0,180);
+    
+    anguloX1 = map(anguloX,0,180,150,600);
+
+    delay(20);
+    pwm.setPWM(0,0,anguloX1);
 
     //Wrist rotation/closing
 
     angulomuneca = analogRead(muneca);
     angulomuneca = map(angulomuneca, 0, 1023, 125, 575);
+    delay(20);
     pwm.setPWM(3, 0, angulomuneca);
     
     
     estadoboton = digitalRead(mano);
-    if (estadoboton == HIGH) {
+    if (estadoboton == LOW) {
       delay(500);
       if (buttonlast == LOW) {
         pwm.setPWM(4,0,400);
@@ -146,6 +163,5 @@ void loop() {
       
     }//Control condition end
     }
-    delay(50);
   } //Loop end
 }
