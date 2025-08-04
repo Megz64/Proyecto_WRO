@@ -21,7 +21,7 @@ int mano = 2;
 int angulomuneca;
 int estadoboton;
 
-int full_direction,turn_direction;
+int full_direction,turn_direction,motor_velocity;
 
 int botoncontrol=3;
 bool control;
@@ -63,7 +63,11 @@ void loop() {
   joyValY = map (joyValY, 0, 1023, 0, 180);
 
   secondaryjoyValY = analogRead(secondaryjoyY);
-  secondaryjoyValY = map (secondaryjoyValY,470,1023,0,180);
+  secondaryjoyValY = map (secondaryjoyValY,300,1023,0,180);
+  
+
+  motor_velocity = analogRead(secondaryjoyY);
+  motor_velocity = map (motor_velocity,300,1023,0,200);
 
   //Serial.println(full_direction);
   //Serial.println(turn_direction);
@@ -71,30 +75,32 @@ void loop() {
   control = digitalRead(botoncontrol);
 
   if (control==HIGH) {
+    Serial.println(motor_velocity);
     digitalWrite(4,HIGH);
 
     full_direction = (desiredvalue * 0.8) + (full_direction * 0.2);
     turn_direction = (desiredvalue * 0.8) + (turn_direction * 0.2);
+    
 
     if (full_direction > 530) {
       analogWrite(5, 0);
-      analogWrite(6, 200);
+      analogWrite(6, motor_velocity);
       analogWrite(9, 0);
-      analogWrite(10, 200);
+      analogWrite(10, motor_velocity);
     } else if (full_direction < 490) {
-      analogWrite(5, 200);
+      analogWrite(5, motor_velocity);
       analogWrite(6, 0);
-      analogWrite(9, 200);
+      analogWrite(9, motor_velocity);
       analogWrite(10, 0);
     } else if (turn_direction > 530) {
-      analogWrite(5, 220);
+      analogWrite(5, 20+motor_velocity);
       analogWrite(6, 0);
       analogWrite(9, 0);
-      analogWrite(10, 220);
+      analogWrite(10, 20+motor_velocity);
     } else if (turn_direction < 490) {
       analogWrite(5, 0);
-      analogWrite(6, 220);
-      analogWrite(9, 220);
+      analogWrite(6, 20+motor_velocity);
+      analogWrite(9, 20+motor_velocity);
       analogWrite(10, 0);
     } else {
       analogWrite(5, 0);
@@ -105,6 +111,7 @@ void loop() {
 
 
   } else if (control==LOW) {
+    Serial.println(secondaryjoyValY);
     digitalWrite(4,LOW);
     if (joyValY > 95) {
       anguloY+=2;
@@ -116,12 +123,14 @@ void loop() {
     anguloY = constrain(anguloY,0,180);
 
     anguloY1 = map(anguloY,0,180,150,600);
+    
     if (secondaryjoyValY > 100) {
-      anguloY2 = map(secondaryjoyValY,0,180,325,600);
+      anguloY2 = map(secondaryjoyValY,0,180,150,600);
     } else if (secondaryjoyValY < 80) {
       anguloY2 = map(secondaryjoyValY,0,180,200,325);
     } else {
-      anguloY2 = map(90-anguloY,0,180,150,600);
+      anguloY2 = map(90-anguloY,0,180,200,600);
+      Serial.println(anguloY2);
     }
 
     delay(20);
@@ -155,10 +164,10 @@ void loop() {
     if (estadoboton == LOW) {
       delay(500);
       if (buttonlast == LOW) {
-        pwm.setPWM(4,0,400);
+        pwm.setPWM(15,0,400);
         buttonlast = HIGH;
       } else {
-        pwm.setPWM(4,0,250);
+        pwm.setPWM(15,0,250);
         buttonlast = LOW;
       
     }//Control condition end
