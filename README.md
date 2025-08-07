@@ -1,4 +1,9 @@
-<align="left" img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://github.com/user-attachments/assets/f0590662-503c-4829-91e4-af4fe89cfa5e" />         <align="right" img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://wro-association.org/wp-content/uploads/WRO-2025-Theme-Logo_Vector_18Nov-400x308.png" />
+<table>
+  <tr>
+    <td><img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://github.com/user-attachments/assets/f0590662-503c-4829-91e4-af4fe89cfa5e" /></td>         
+    <td><img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://wro-association.org/wp-content/uploads/WRO-2025-Theme-Logo_Vector_18Nov-400x308.png" /></td>
+  </tr>
+</table>
 
 Somos Robogenius JR, de la escuela Liberty School de Tegucigalpa, y presentamos nuestro proyecto para WRO 2025, en la temporada de The Future of Robots.
 
