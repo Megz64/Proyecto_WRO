@@ -8,6 +8,8 @@
 </table>
 </div>
 
+<br><br>
+
 <div align="center">
   <h3>Somos Robogenius JR, de la escuela Liberty School de Tegucigalpa, y presentamos nuestro proyecto para WRO 2025, en la temporada de The Future of Robots.</h3>
 </div>
