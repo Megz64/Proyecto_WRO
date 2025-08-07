@@ -23,7 +23,7 @@
 
 <div align="center">
   <h3>Herramientas utilizadas</h3>
-  <p>Nuestro proyecto esta codificado en **C++**, en el **IDE de arduino** y **VsCode**, con un **Arduino UNO a la cabeza**, ayudado de un **DRV8833** para el control de motores y un **PCA9685** para el control de los servomotores, de los cuales tenemos 5. Tambien utilizamos un kit para conseguir las piezas y componentes del brazo y utilizamos las partes metalicas de un **Mbot** para la base del robot, tambien reutilizando los motores del mismo al quitarles la parte original y los engranajes y huellas de tanque para el movimiento.</p>
+  <p>Nuestro proyecto esta codificado en <strong>C++</strong>, en el <strong>IDE de arduino</strong> y <strong>VsCode</strong>, con un <strong>Arduino UNO a la cabeza</strong>, ayudado de un <strong>DRV8833</strong> para el control de motores y un <strong>PCA9685</strong> para el control de los servomotores, de los cuales tenemos 5. Tambien utilizamos un kit para conseguir las piezas y componentes del brazo y utilizamos las partes metalicas de un <strong>Mbot</strong> para la base del robot, tambien reutilizando los motores del mismo al quitarles la parte original y los engranajes y huellas de tanque para el movimiento.</p>
 
 <br><br>
   
