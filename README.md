@@ -36,8 +36,7 @@
 <br><br>
 
 <div align="center">
-  <img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://drive.google.com/uc?export=view&id=1e7UtPeOQ0aP3ZkgUW-JMe2e8cc929yhT" />
+  <img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://github.com/user-attachments/assets/cb67d6e3-a778-4b2a-a740-2cc91ae192a5" />
 </div>
-
 
 
