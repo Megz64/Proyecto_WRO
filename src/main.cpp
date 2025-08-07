@@ -1,52 +1,50 @@
 #include <Arduino.h>
-#include <AccelStepper.h>
-
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
 Adafruit_PWMServoDriver pwm;
 
-#define Servo_num 5
-
-AccelStepper MotorIzq (AccelStepper::FULL4WIRE, 2, 4, 3, 5);
-AccelStepper MotorDer (AccelStepper::FULL4WIRE, 6, 8, 7, 9);
+static int desiredvalue = 512;
 
 int joyY = A1;
 int joyX = A0;
+int secondaryjoyY = A3;
 
-int joyValX,joyValY;
-float X,Y;
-float vX,vY;
+int joyValX,joyValY,secondaryjoyValY=512;
 
-int anguloX,anguloY1,anguloY2,anguloY3 = 350;
+int  anguloY1,anguloY2,anguloY = 180;
+int anguloX1,anguloX = 180;
 
 int muneca = A2;
-int mano = 10;
+int mano = 2;
 int angulomuneca;
 int estadoboton;
 
-int full_direction,turn_direction;
+int full_direction,turn_direction,motor_velocity;
 
-int botoncontrol=11;
+int botoncontrol=3;
 bool control;
-bool controllast;
+bool buttonlast;
+
+
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-
-  MotorIzq.setMaxSpeed(1000);
-  MotorDer.setMaxSpeed(1000);
-
-  MotorIzq.setAcceleration(500);
-  MotorDer.setAcceleration(500);
-
-
+  Wire.begin();
   pwm.begin();
   pwm.setPWMFreq(50);
+  Wire.setClock(50000);
+  delay(1000);
 
-  pinMode(mano, INPUT);
-  pinMode(botoncontrol, INPUT);
+  pinMode(mano, INPUT_PULLUP);
+  pinMode(botoncontrol, INPUT_PULLUP);
+
+  control = LOW;
+  pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+
+  pinMode(4, OUTPUT);
 
 }
 
@@ -61,109 +59,112 @@ void loop() {
   joyValY = analogRead(joyY);
   joyValY = map (joyValY, 0, 1023, 0, 180);
 
-  MotorIzq.run();
-  MotorDer.run();
+  secondaryjoyValY = analogRead(secondaryjoyY);
+  secondaryjoyValY = map (secondaryjoyValY,300,1023,0,180);
+  
 
-  if (controllast==HIGH) {
+  motor_velocity = analogRead(secondaryjoyY);
+  motor_velocity = map (motor_velocity,300,1023,0,200);
+
+  control = digitalRead(botoncontrol);
+
+  if (control==HIGH) {
+    Serial.println(motor_velocity);
+    digitalWrite(4,HIGH);
+
+    full_direction = (desiredvalue * 0.8) + (full_direction * 0.2);
+    turn_direction = (desiredvalue * 0.8) + (turn_direction * 0.2);
+    
+
     if (full_direction > 530) {
-      MotorIzq.move(-100);
-      MotorDer.move(-100);
-    } 
-  
-    if (full_direction < 510) {
-      MotorIzq.move(100);
-      MotorDer.move(100);
+      analogWrite(5, 0);
+      analogWrite(6, motor_velocity);
+      analogWrite(9, 0);
+      analogWrite(10, motor_velocity);
+    } else if (full_direction < 490) {
+      analogWrite(5, motor_velocity);
+      analogWrite(6, 0);
+      analogWrite(9, motor_velocity);
+      analogWrite(10, 0);
+    } else if (turn_direction > 530) {
+      analogWrite(5, 20+motor_velocity);
+      analogWrite(6, 0);
+      analogWrite(9, 0);
+      analogWrite(10, 20+motor_velocity);
+    } else if (turn_direction < 490) {
+      analogWrite(5, 0);
+      analogWrite(6, 20+motor_velocity);
+      analogWrite(9, 20+motor_velocity);
+      analogWrite(10, 0);
+    } else {
+      analogWrite(5, 0);
+      analogWrite(6, 0);
+      analogWrite(9, 0);
+      analogWrite(10, 0);
     }
 
-    if (turn_direction > 530) {
-      MotorIzq.move(-100);
-      MotorDer.move(100);
-    }
-  
-    if (turn_direction < 510) {
-      MotorIzq.move(100);
-      MotorDer.move(-100);
-    }
-  } else {
 
-    anguloX = constrain(anguloX, 125, 575);
-
-      if (joyValX > 95) {
-      vX = map(joyValX,90,180,1,100);
-    } else if (joyValX < 85) {
-      vX = map(joyValX,90,0,1,100);
-    }
-    vX = vX * 0.1;
-
-    
-    if (joyValX > 95) {
-      anguloX = anguloX + vX;
-      pwm.setPWM(0, 0, anguloX);
-    }
-    if (joyValX < 85) {
-      anguloX = anguloX - vX;
-      pwm.setPWM(0, 0, anguloX);
-    }
-
-    anguloY1 = constrain(anguloY1, 125, 575);
-    anguloY2 = constrain(anguloY2, 125, 575);
-    anguloY3 = constrain(anguloY3, 200, 575);
-
-
-      if (joyValY > 95) {
-      vY = map(joyValY,90,180,1,50);
-    } else if (joyValY < 85) {
-      vY = map(joyValY,90,0,1,50);
-    }
-    vY = vY * 0.1;
-
-    
+  } else if (control==LOW) {
+    Serial.println(secondaryjoyValY);
+    digitalWrite(4,LOW);
     if (joyValY > 95) {
-      anguloY1 = anguloY1 + vY;
-      anguloY2 = 600 - anguloY1;
-      anguloY3 = 600 - anguloY1;
-      anguloY3 = constrain(anguloY3, 200, 575);
+      anguloY+=2;
 
-      pwm.setPWM(1, 0, anguloY1);
-      pwm.setPWM(2, 0, anguloY2);
-      pwm.setPWM(3, 0, anguloY3);
+    } else if (joyValY < 85) {
+      anguloY-=2;
     }
-    if (joyValY < 85) {
-      anguloY1 = anguloY1 - vY;
-      anguloY2 = 600 - anguloY1;
-      anguloY3 = 600 - anguloY1;
-      anguloY3 = constrain(anguloY3, 200, 575);
-  
-      pwm.setPWM(1, 0, anguloY1);
-      pwm.setPWM(2, 0, anguloY2);
-      pwm.setPWM(3, 0, anguloY3);
+
+    anguloY = constrain(anguloY,0,180);
+
+    anguloY1 = map(anguloY,0,180,150,600);
+    
+    if (secondaryjoyValY > 100) {
+      anguloY2 = map(secondaryjoyValY,0,180,150,600);
+    } else if (secondaryjoyValY < 80) {
+      anguloY2 = map(secondaryjoyValY,0,180,200,325);
+    } else {
+      anguloY2 = map(90-anguloY,0,180,200,600);
+      Serial.println(anguloY2);
     }
+
+    delay(20);
+    pwm.setPWM(1,0,anguloY1);
+    delay(20);
+    pwm.setPWM(2,0,anguloY2);
+
+    if (joyValX > 95) {
+      anguloX+=2;
+
+    } else if (joyValX < 85) {
+      anguloX-=2;
+    }
+
+    anguloX = constrain(anguloX,0,180);
+    
+    anguloX1 = map(anguloX,0,180,150,600);
+
+    delay(20);
+    pwm.setPWM(0,0,anguloX1);
 
     //Wrist rotation/closing
 
     angulomuneca = analogRead(muneca);
     angulomuneca = map(angulomuneca, 0, 1023, 125, 575);
-    pwm.setPWM(4, 0, angulomuneca);
-  
+    delay(20);
+    pwm.setPWM(3, 0, angulomuneca);
+    
+    
     estadoboton = digitalRead(mano);
-    if (estadoboton == HIGH) {
-      delay(100);
+    if (estadoboton == LOW) {
+      delay(500);
       if (buttonlast == LOW) {
-        pwm.setPWM(5,0,400);
+        pwm.setPWM(15,0,400);
         buttonlast = HIGH;
       } else {
-        pwm.setPWM(5,0,250);
+        pwm.setPWM(15,0,250);
         buttonlast = LOW;
-      }
+      
+    }//Control condition end
     }
-    delay(30);
-  }//Control condition end
-
-  control = digitalRead(botoncontrol);
-  if (control = HIGH) {
-    if (controllast == LOW) {
-      controllast = HIGH;
-    } else {
-      controllast = LOW;
-    }
-} //Loop end
+  } //Loop end
+}
