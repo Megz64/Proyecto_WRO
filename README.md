@@ -28,10 +28,16 @@
   <p>Nuestro proyecto esta codificado en <strong>C++</strong>, en el <strong>IDE de arduino</strong> y <strong>VsCode</strong>, con un <strong>Arduino UNO a la cabeza</strong>, ayudado de un <strong>DRV8833</strong> para el control de motores y un <strong>PCA9685</strong> para el control de los servomotores, de los cuales tenemos 5. Tambien utilizamos un kit para conseguir las piezas y componentes del brazo y utilizamos las partes metalicas de un <strong>Mbot</strong> para la base del robot, tambien reutilizando los motores del mismo al quitarles la parte original y los engranajes y huellas de tanque para el movimiento.</p>
 
 <br><br>
-  
-</div>
-
 <div align="center">
   <h3>Problemas</h3>
   <p>Tuvimos varios problemas al construir este mismo robot, pero unos de los mas notables fueron no tener las partes lo suficientemente eficientes, no tener las partes en si, buscar como controlarlo, problemas de codigo en general, y montar las partes en el robot para que fuera decentemente compacto.</p>
 </div>
+
+<br><br>
+
+<div align="center">
+  <img width="396" height="612" alt="tmp_d3a67aa5-9bd1-4608-ae1b-1a4a748568a0" src="https://drive.google.com/file/d/1t8BiJuN4BueURUKQhulNi_TWskr9dtil/view?usp=sharing" />
+</div>
+
+
+
