@@ -12,14 +12,21 @@
   <h3>Somos Robogenius JR, de la escuela Liberty School de Tegucigalpa, y presentamos nuestro proyecto para WRO 2025, en la temporada de The Future of Robots.</h3>
 </div>
 
+<br><br><br>
+
 <div align="center">
   <h3>¿Por que decidimos hacer este proyecto?</h3>
   <p>Nosotros decidimos hacer este proyecto ya que debido a las ideas proporcionadas nos gusto mucho hacer un robot que ayudara a la exploracion de planetas y/o ayudase a naves en el espacio para reparacion y mantenimiento.</p>
 </div>
 
+<br><br>
+
 <div align="center">
   <h3>Herramientas utilizadas</h3>
   <p>Nuestro proyecto esta codificado en **C++**, en el **IDE de arduino** y **VsCode**, con un **Arduino UNO a la cabeza**, ayudado de un **DRV8833** para el control de motores y un **PCA9685** para el control de los servomotores, de los cuales tenemos 5. Tambien utilizamos un kit para conseguir las piezas y componentes del brazo y utilizamos las partes metalicas de un **Mbot** para la base del robot, tambien reutilizando los motores del mismo al quitarles la parte original y los engranajes y huellas de tanque para el movimiento.</p>
+
+<br><br>
+  
 </div>
 
 <div align="center">
