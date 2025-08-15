@@ -1,19 +1,18 @@
 #include <Arduino.h>
-
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
 Adafruit_PWMServoDriver pwm;
+
+static int desiredvalue = 512;
 
 int joyY = A1;
 int joyX = A0;
 int secondaryjoyY = A3;
 
 int joyValX,joyValY,secondaryjoyValY=512;
-float X,Y;
-float vX,vY;
 
-int  anguloY1,anguloY2,anguloY = 90;
+int  anguloY1,anguloY2,anguloY = 180;
 int anguloX1,anguloX = 180;
 
 int muneca = A2;
@@ -23,14 +22,13 @@ int estadoboton;
 
 int full_direction,turn_direction,motor_velocity;
 
-int botoncontrol=3;
+int botoncontrol=4 ;
 bool control;
 bool buttonlast;
 
-void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
 
+
+void setup() {
   Wire.begin();
   pwm.begin();
   pwm.setPWMFreq(50);
@@ -46,7 +44,6 @@ void setup() {
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
 
-  pinMode(4, OUTPUT);
 
 }
 
@@ -54,7 +51,6 @@ void loop() {
   
   full_direction = analogRead(joyY);
   turn_direction = analogRead(joyX);
-  static int desiredvalue = 512;
 
   joyValX = analogRead(joyX);
   joyValX = map (joyValX, 0, 1023, 0, 180);
@@ -68,9 +64,6 @@ void loop() {
 
   motor_velocity = analogRead(secondaryjoyY);
   motor_velocity = map (motor_velocity,300,1023,0,200);
-
-  //Serial.println(full_direction);
-  //Serial.println(turn_direction);
 
   control = digitalRead(botoncontrol);
 
